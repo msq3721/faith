@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="index/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .title {
+            font-size: 3.6rem;
+            font-weight: bold;
+            color: #060515;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+        .aside {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body >
+<div layout:fragment="content">
+    <section id="banner">
+
+    </section>
+    <article id="main">
+        <section class=" style3 container index-container  " id="projectPageApp">
+            <el-header class="index-backgraound-white">
+                <el-dropdown>
+                    <i class="el-icon-setting" style="margin-right: 15px"></i>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>查看</el-dropdown-item>
+                        <el-dropdown-item>新增</el-dropdown-item>
+                        <el-dropdown-item>删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <span>信任筹</span>
+            </el-header>
+            <div class="title" th:text="${record.name}"></div>
+            <el-row :gutter="60">
+                <el-col :span="16">
+                    <el-tabs type="border-card">
+                        <el-tab-pane label="详情">
+                            <div th:utext="${record.description}">
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane label="状态">
+                            <div class="block">
+                                <el-timeline :reverse="false">
+                                    <el-timeline-item
+                                            v-for="(activity, index) in activities"
+                                            :key="index"
+                                            :timestamp="activity.timestamp">
+                                        {{activity.content}}
+                                    </el-timeline-item>
+                                </el-timeline>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane label="讨论">
+                            <el-input
+                                    type="textarea"
+                                    :rows="3"
+                                    placeholder="在这里和大家讨论一下吧"
+                                    maxlength="150"
+                                    v-model="topicarea">
+                            </el-input>
+                            <div>还可以输入{{topicLength}}个字符</div>
+                            <div style="float: right">
+                                <div th:if="${session.general_user eq null}">
+                                    请先点击右上角登录
+                                </div>
+                                <div th:if="${session.general_user ne null}">
+                                    <el-button @click="submitTopic" >提交</el-button>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+                    </el-tabs>
+
+                </el-col>
+                <el-col :span="8" class="aside">
+                    已筹到
+                    <div class="title">
+                        ￥<span th:text="${record.fundAmount}"></span>
+                    </div>
+                </el-col>
+            </el-row>
+
+        </section>
+    </article>
+</div>
+<script th:inline="javascript" layout:fragment="javascript">
+    var projectIndexApp= new Vue({
+            el: '#projectPageApp',
+            data() {
+                return {
+                    topicarea: '',
+                    activities: [{
+                        content: '活动按期开始',
+                        timestamp: '2018-04-15'
+                    }, {
+                        content: '通过审核',
+                        timestamp: '2018-04-13'
+                    }, {
+                        content: '创建成功',
+                        timestamp: '2018-04-11'
+                    }],
+                }
+            },
+            methods: {
+                submitTopic() {
+                    // let a =[[${param.id}]];
+                    // let  b = [[${session.general_user.id}]];
+                    // console.log(a);
+                    // console.log(b);
+                    axios.put('/project/json/topic',{
+                        helpProjectId: parseInt([[${param.id}]]),
+                        fromUserId: [[${session.general_user.pwd}]],
+                        content:this.topicarea
+                    }).then((res)=>{
+                        if(res.data.status === 'success'){
+                            this.$message.success(res.data.msg);
+                        }else {
+                            this.$message.success(res.data.msg);
+                        }
+                    })
+                }
+
+            },
+            computed: {
+                topicLength() {
+                    return 150-this.topicarea.length;
+                }
+            }
+        })
+</script>
+</body>
+</html>

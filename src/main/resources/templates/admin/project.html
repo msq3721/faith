@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/Layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="tpl-portlet-components">
+        <div class="widget-head am-cf">
+            <div class="widget-title  am-cf">求助项目列表</div>
+        </div>
+        <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>项目名称</th>
+                <th>项目预算</th>
+                <th>项目结束日期</th>
+                <th>状态</th>
+                <th>用户id</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r,iterStat : ${record}">
+                <td th:text="${iterStat.count}"></td>
+                <td th:text="${r.name}"></td>
+                <td th:text="${r.budget}" ></td>
+                <td th:text="${r.endRaiseDate}" ></td>
+<!--                <td th:switch="${r.status}">-->
+<!--                    <span th:case="<10">未审核</span>-->
+<!--                    <span th:case="10">已审核</span>-->
+<!--                </td>-->
+                <td>
+                    <span th:if="${r.status <10}" th:text="未审核"></span>
+                    <span th:if="${r.status eq 10}" th:text="已审核"></span>
+                </td>
+                <td th:text="${r.userId}" ></td>
+                <td>
+                    <div class="tpl-table-black-operation">
+                        <a th:href="'/admin/project/edit?id='+${r.id}">
+                            <i class="am-icon-pencil"></i> 处理
+                        </a>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- more data -->
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>

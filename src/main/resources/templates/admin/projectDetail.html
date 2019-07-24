@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/Layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="tpl-portlet-components">
+        <div class="widget-head am-cf">
+            <div class="widget-title  am-cf">求助项目详情</div>
+        </div>
+        <form class="am-form" th:action="'/admin/project/edit/handle?id=1'" >
+            <fieldset >
+                <input type="hidden" name="id" th:value="${param.id}">
+                <div class="am-form-group">
+                    <label for="oc-ds-select-1">禁用的下拉选框</label>
+                    <select id="oc-ds-select-1" class="am-form-field" name="status">
+                        <option value="10" >通过审核</option>
+                    </select>
+                </div>
+                <button type="submit" class="am-btn am-btn-primary">审核</button>
+            </fieldset>
+        </form>
+        <div>
+            <img th:src="@{'/logo/'+${record.logo}}" />
+        </div>
+        <div th:utext="${record.description}"></div>
+    </div>
+</div>
+
+</body>
+</html>

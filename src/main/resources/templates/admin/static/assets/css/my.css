@@ -1,0 +1,8 @@
+a.tpl-table-black-operation-save {
+    border: 1px solid #4aaa4a;
+    color: #4aaa4a;
+}
+a.tpl-table-black-operation-save :hover {
+     background: #4aaa4a;
+     color:#fff;
+ }

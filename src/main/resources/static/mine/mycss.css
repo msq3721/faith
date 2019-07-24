@@ -1,0 +1,40 @@
+.index-container {
+    min-height: 50rem;
+}
+.index-backgraound-white{
+    background: #ffffff;
+}
+.index-container .el-container {
+    min-height: 800px;
+}
+.index-container .el-aside {
+    min-height: 800px;
+    border-right: solid 1px #e6e6e6;
+}
+.ql-toolbar button {
+    min-width: 0;
+}
+el-picker-panel__body-wrapper button {
+    min-width: 0;
+}
+ql-editor {
+    min-height: 50rem;
+}
+.index-image-text {
+    margin-top: 1rem;
+    padding-left: 1rem;
+    display: block;
+    font-weight: bold;
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+}
+.index-img-title {
+    display: block;
+    padding-left: 1rem;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+.index-img-title2 {
+    padding-left: 1rem;
+    font-size: 0.8rem;
+}

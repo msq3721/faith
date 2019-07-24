@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="index/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .el-row {
+            margin-bottom: 20px;
+
+        }
+        .el-col {
+            border-radius: 4px;
+            margin-top: 20px;
+            /*background-color: #ffffff;*/
+        }
+        .bg-purple-dark {
+            /*background: #99a9bf;*/
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+            border-radius: 15px;
+            background-color: #ffffff;
+        }
+        .bg-purple {
+            background: #d3dce6;
+        }
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+        }
+        .row-bg {
+            padding: 10px 0;
+            background-color: #f9fafc;
+        }
+        .img-box{
+            width: 100%;
+            height: 0px;
+            padding-bottom: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .img-box img{
+            width: 100%;
+        }
+        .midarea {
+            border-left:solid 1px #0cc6e6;
+            border-right: solid 1px #0cc6e6;
+            border-radius: 0px;
+        }
+        .el-progress {
+            margin: 0 0.5rem;
+        }
+    </style>
+</head>
+<body >
+<div layout:fragment="content">
+    <section id="banner">
+
+    </section>
+    <article id="main">
+        <section class=" style3 container index-container  " id="projectIndexApp">
+            <el-header class="index-backgraound-white">
+                <el-dropdown>
+                    <i class="el-icon-setting" style="margin-right: 15px"></i>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>查看</el-dropdown-item>
+                        <el-dropdown-item>新增</el-dropdown-item>
+                        <el-dropdown-item>删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <span>信任筹</span>
+            </el-header>
+            <el-row :gutter="60" style="margin-top: 1rem" >
+                <el-col :span="6" v-for="(item, index) in projectList" >
+                    <div class="bg-purple-dark">
+                        <div class="img-box">
+                            <a>
+                                <img :src="'/logo/'+item.logo"
+                                     @click="clickProject(item.id)"/>
+                            </a>
+                        </div>
+
+                        <span class="index-image-text">{{item.name}}</span>
+                        <el-progress
+                                :stroke-width="16"
+                                :color="colors"
+                                :percentage="progressA(item.budget,item.fundAmount)"
+                                :show-text="false">
+                        </el-progress>
+                        <el-row style="padding: 0.5rem 0.2rem;">
+                            <el-col :span="7" >
+                                <div class="index-img-title">{{percentAmount(item.budget,item.fundAmount)}}</div>
+                                <div class="index-img-title2">已达</div>
+                            </el-col>
+                            <el-col :span="10" class="midarea">
+                                <div class="index-img-title">￥{{item.fundAmount}}</div>
+                                <div class="index-img-title2">已筹</div>
+                            </el-col>
+                            <el-col :span="7">
+                                <div class="index-img-title">{{dayDiff(item.endRaiseDate)}}</div>
+                                <div class="index-img-title2">剩余时间</div>
+                            </el-col>
+                        </el-row>
+                    </div>
+                </el-col>
+            </el-row>
+
+        </section>
+
+    </article>
+</div>
+<script th:inline="javascript" layout:fragment="javascript">
+    var projectIndexApp= new Vue({
+        el: '#projectIndexApp',
+        data() {
+            return {
+                projectList: [],
+                colors: [
+                    {color: '#E9A368', percentage: 99},
+                    {color: '#83d3c9', percentage: 100}
+                ],
+            }
+        },
+        methods: {
+            progressA(budget,amount) {
+                let num = amount/budget*100;
+                return num;
+            },
+            percentAmount(budget,amount) {
+                let num = amount/budget*100;
+                num = num.toFixed(1);
+                return num+'%'
+            },
+            dayDiff(end) {
+                let endDay = dayjs(end);
+                let nowDay = dayjs();
+                return endDay.diff(nowDay,'day')+'天';
+            },
+            clickProject(id) {
+                console.log(id);
+                window.location.href="/project/page?id="+id;
+            }
+
+        },
+        computed: {
+
+
+        },
+        mounted() {
+            axios.get('/project/json/project/'
+            ).then((res)=>{
+                if(res.data.status === 'success'){
+                    console.log(res.data.data);
+                    this.projectList = res.data.data;
+                    console.log(this.projectList)
+                }
+            })
+        }
+    });
+</script>
+</body>
+
+</html>

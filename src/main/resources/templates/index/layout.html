@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>信任筹</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="/index/assets/css/main.css" />
+    <link rel="stylesheet" href="/element-ui/index.css">
+    <link rel="stylesheet" href="/mine/mycss.css">
+    <!--		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+    <noscript><link rel="stylesheet" href="/index/assets/css/noscript.css" /></noscript>
+    <style>
+        .el-dialog__headerbtn{
+            line-height: 24px;
+        }
+    </style>
+</head>
+<body class="index is-preload">
+<div id="page-wrapper">
+    <!-- Header -->
+    <header id="header" class="alt">
+        <h1 id="logo"><a href="/index">信任筹<span></span></a></h1>
+        <nav id="nav">
+            <ul id="navApp">
+                <li class="current"><a href="/index">首页</a></li>
+                <li class="submenu">
+                    <a href="/project">浏览项目</a>
+                    <ul>
+                        <li><a href="">赈灾</a></li>
+                        <li><a href="">扶贫</a></li>
+                        <li><a href="">疾病</a></li>
+                        <li><a href="">资助</a></li>
+                    </ul>
+                </li>
+                <li th:if="${session.general_user ne null}">
+                    <a   class="button primary" type="text"  href="/user/index/" >个人中心</a>
+                    <a   class="button warning" type="text" href="/logout">注销</a>
+                </li>
+                <li th:if="${session.general_user eq null}" >
+                    <a  class="button primary" type="text" @click="dialogFormVisible = true" >登录</a>
+                    <a  class="button warning" type="text" href="/reg" >注册</a>
+                </li>
+                <el-dialog title="登录" :visible.sync="dialogFormVisible"  center>
+                    <el-form :model="form"  :rules="rules" ref="ruleForm">
+                        <el-form-item label="手机" :label-width="formLabelWidth" prop="mobile">
+                            <el-input v-model="form.mobile" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="密码" :label-width="formLabelWidth" prop="pwd">
+                            <el-input v-model="form.pwd" autocomplete="off"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+                    </div>
+                </el-dialog>
+            </ul>
+        </nav>
+    </header>
+    <div layout:fragment="content">
+
+    </div>
+    <!-- Footer -->
+    <footer id="footer">
+
+
+        <ul class="copyright">
+            <h3>信任筹</h3>
+        </ul>
+
+    </footer>
+</div>
+<!-- Scripts -->
+
+<script src="/index/assets/js/jquery.min.js"></script>
+<script src="/index/assets/js/jquery.dropotron.min.js"></script>
+<script src="/index/assets/js/jquery.scrolly.min.js"></script>
+<script src="/index/assets/js/jquery.scrollex.min.js"></script>
+<script src="/index/assets/js/browser.min.js"></script>
+<script src="/index/assets/js/breakpoints.min.js"></script>
+<script src="/index/assets/js/util.js"></script>
+<script src="/index/assets/js/main.js"></script>
+<script src = "/common/js/vue.js"></script>
+<script src="/element-ui/index.js"></script>
+<script src = "/common/js/axios.js"></script>
+<script src = "/common/js/dayjs.min.js"></script>
+
+<script>
+    var vue = new Vue({
+        el:'#navApp',
+        data(){
+
+            return{
+                dialogFormVisible: false,
+                form: {
+                    mobile: '',
+                    pwd:''
+                },
+                rules:{
+                    mobile:[
+                        {required:true,message:'请输入手机号',tigger:'blur'},
+                        {pattern: /^1[34578]\d{9}$/, message: '您的手机号码输入错误',tigger:'blur'}
+                    ],
+                    pwd:[
+                        {required:true,message:'请输入密码',tigger:'blur'},
+                    ]
+                },
+                submitForm(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            axios.post('/user/json/pwdval',{
+                                pwd:this.form.pwd,
+                                mobile:this.form.mobile
+                            }).then((res)=>{
+                                console.log(res.data);
+                                if(res.data.status === 'err'){
+                                    this.$message.error(res.data.msg);
+                                }else {
+                                    this.$message.success(res.data.msg);
+                                    this.dialogFormVisible = false;
+                                    window.location.reload();
+                                }
+                            })
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                },
+                formLabelWidth: '80px'
+            }
+        },
+        methods:{
+            reloadPage:function () {
+                this.dialogFormVisible = false;
+                this.form.mobile = "1234";
+            }
+        }
+    });
+</script>
+<script th:inline="javascript" layout:fragment="javascript">
+
+</script>
+</body>
+
+
+</html>
